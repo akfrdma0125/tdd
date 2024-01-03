@@ -62,4 +62,5 @@ class UserRepositoryTest {
         //then
         assertThat(savedUserEntity).isNotPresent();
     }
+
 }
