@@ -1,2 +1,2 @@
-delete from `users` where id > 0;
-delete from `posts` where id > 0;
+delete from `posts` where 1;
+delete from `users` where 1;
