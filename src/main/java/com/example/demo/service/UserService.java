@@ -42,7 +42,7 @@ public class UserService {
             .nickname(userCreateDto.getNickname())
             .address(userCreateDto.getAddress())
             .certificationCode(UUID.randomUUID().toString())
-            .status(UserStatus.INACTIVE)
+            .status(UserStatus.PENDING)
             .build();
         userEntity = userRepository.save(userEntity);
         String certificationUrl = generateCertificationUrl(userEntity);
