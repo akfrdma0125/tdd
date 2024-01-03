@@ -33,6 +33,10 @@ h2를 이용하여 `auto create table`을 하고 있기 때문에 바로 실행�
 근데, @ExtendWith 어노테이션을 사용하지 않아도 됨 (내장되어 있음) <br>
 
 
+## 소소하긴 한데 몰랐음
+* find: Optional을 반환한다는 의미로 많이 사용
+* get: 애초에 데이터가 없으면 에러를 던진다는 의미가 내포되어 있음
+
 ## 관리 도구로 바로가기
 
 - [h2-console](http://localhost:8080/h2-console)

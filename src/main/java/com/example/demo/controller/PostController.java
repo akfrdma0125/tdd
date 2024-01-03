@@ -34,16 +34,16 @@ public class PostController {
     public ResponseEntity<PostResponse> updatePost(@PathVariable long id, @RequestBody PostUpdateDto postUpdateDto) {
         return ResponseEntity
             .ok()
-            .body(toResponse(postService.updatePost(id, postUpdateDto)));
+            .body(toResponse(postService.update(id, postUpdateDto)));
     }
 
     public PostResponse toResponse(PostEntity postEntity) {
-        PostResponse PostResponse = new PostResponse();
-        PostResponse.setId(postEntity.getId());
-        PostResponse.setContent(postEntity.getContent());
-        PostResponse.setCreatedAt(postEntity.getCreatedAt());
-        PostResponse.setModifiedAt(postEntity.getModifiedAt());
-        PostResponse.setWriter(userController.toResponse(postEntity.getWriter()));
-        return PostResponse;
+        PostResponse postResponse = new PostResponse();
+        postResponse.setId(postEntity.getId());
+        postResponse.setContent(postEntity.getContent());
+        postResponse.setCreatedAt(postEntity.getCreatedAt());
+        postResponse.setModifiedAt(postEntity.getModifiedAt());
+        postResponse.setWriter(userController.toResponse(postEntity.getWriter()));
+        return postResponse;
     }
 }
