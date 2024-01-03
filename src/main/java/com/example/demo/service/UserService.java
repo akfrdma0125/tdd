@@ -22,6 +22,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JavaMailSender mailSender;
+    private static final String RESOURCE_NAME = "Users";
 
     public Optional<UserEntity> getById(long id) {
         return userRepository.findByIdAndStatus(id, UserStatus.ACTIVE);
@@ -29,22 +30,23 @@ public class UserService {
 
     public UserEntity getByEmail(String email) {
         return userRepository.findByEmailAndStatus(email, UserStatus.ACTIVE)
-            .orElseThrow(() -> new ResourceNotFoundException("Users", email));
+            .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, email));
     }
 
     public UserEntity getByIdOrElseThrow(long id) {
         return userRepository.findByIdAndStatus(id, UserStatus.ACTIVE)
-            .orElseThrow(() -> new ResourceNotFoundException("Users", id));
+            .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, id));
     }
 
     @Transactional
     public UserEntity createUser(UserCreateDto userCreateDto) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail(userCreateDto.getEmail());
-        userEntity.setNickname(userCreateDto.getNickname());
-        userEntity.setAddress(userCreateDto.getAddress());
-        userEntity.setStatus(UserStatus.PENDING);
-        userEntity.setCertificationCode(UUID.randomUUID().toString());
+        UserEntity userEntity = UserEntity.builder()
+            .email(userCreateDto.getEmail())
+            .nickname(userCreateDto.getNickname())
+            .address(userCreateDto.getAddress())
+            .certificationCode(UUID.randomUUID().toString())
+            .status(UserStatus.INACTIVE)
+            .build();
         userEntity = userRepository.save(userEntity);
         String certificationUrl = generateCertificationUrl(userEntity);
         sendCertificationEmail(userCreateDto.getEmail(), certificationUrl);
@@ -62,13 +64,13 @@ public class UserService {
 
     @Transactional
     public void login(long id) {
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Users", id));
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, id));
         userEntity.setLastLoginAt(Clock.systemUTC().millis());
     }
 
     @Transactional
     public void verifyEmail(long id, String certificationCode) {
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Users", id));
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, id));
         if (!certificationCode.equals(userEntity.getCertificationCode())) {
             throw new CertificationCodeNotMatchedException();
         }
