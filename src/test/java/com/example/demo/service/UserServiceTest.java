@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.CertificationCodeNotMatchedException;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.UserStatus;
-import com.example.demo.model.dto.UserCreateDto;
-import com.example.demo.model.dto.UserUpdateDto;
-import com.example.demo.repository.UserEntity;
+import com.example.demo.common.domain.exception.CertificationCodeNotMatchedException;
+import com.example.demo.common.domain.exception.ResourceNotFoundException;
+
+import com.example.demo.user.domain.UserCreate;
+import com.example.demo.user.domain.UserStatus;
+import com.example.demo.user.domain.UserUpdate;
+import com.example.demo.user.infrastructure.UserEntity;
+import com.example.demo.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,7 @@ class UserServiceTest {
         String email = "jeohyoo1229@gmail.com";
 
         //when
-        UserEntity result = userService.getByEmail("jeohyoo1229@gmail.com");
+        UserEntity result = userService.getByEmail(email);
 
         //then
         assertThat(result.getNickname()).isEqualTo("jeohyoo1229");
@@ -53,15 +55,12 @@ class UserServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> userService.getByEmail("jeohyoo1228@gmail.com"))
+        assertThatThrownBy(() -> userService.getByEmail(email))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
     void getById은_ACTIVE_상태인_유저를_조회할_수_있다(){
-        //given
-        String email = "jeohyoo1229@gmail.com";
-
         //when
         UserEntity result = userService.getById(1L);
 
@@ -71,9 +70,6 @@ class UserServiceTest {
 
     @Test
     void getById은_PENDING_상태인_유저를_조회할_수_없다(){
-        //given
-        String email = "jeohyoo1228@gmail.com";
-
         //when
         //then
         assertThatThrownBy(() -> userService.getById(2L))
@@ -86,7 +82,7 @@ class UserServiceTest {
     @Test
     void userCreateDto_를_이용하여_유저를_생성할_수_있다() {
         // given
-        UserCreateDto userCreateDto = UserCreateDto.builder()
+        UserCreate userCreateDto = UserCreate.builder()
                 .email("kok202@kakao.com")
                 .address("Gyeongi")
                 .nickname("kok202-k")
@@ -104,7 +100,7 @@ class UserServiceTest {
     @Test
     void userUpdateDto를_이용하여_유저를_수정할_수_있다(){
         //given
-        UserUpdateDto userUpdateDto = UserUpdateDto.builder()
+        UserUpdate userUpdateDto = UserUpdate.builder()
                 .address("서울시 서대문구")
                 .nickname("jeohyoo")
                 .build();
