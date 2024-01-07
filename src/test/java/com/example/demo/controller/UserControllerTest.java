@@ -79,6 +79,13 @@ public class UserControllerTest {
     }
 
     @Test
+    void 사용자가_잘못된_인증코드를_입력할_경우_에러가_발생한다() throws Exception {
+        mockMvc.perform(get("/api/users/2/verify")
+                        .param("certificationCode", "1235-1234-1234-1230"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void 사용자는_내정보를_수정할_수_있다() throws Exception {
         //given
         UserUpdateDto userUpdateDto = UserUpdateDto.builder()
