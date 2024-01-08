@@ -2,12 +2,9 @@ package com.example.demo.user.service;
 
 import com.example.demo.common.domain.exception.CertificationCodeNotMatchedException;
 import com.example.demo.common.domain.exception.ResourceNotFoundException;
-
 import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.domain.UserUpdate;
-import com.example.demo.user.infrastructure.UserEntity;
-import com.example.demo.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +39,10 @@ class UserServiceTest {
         String email = "jeohyoo1229@gmail.com";
 
         //when
-        UserEntity result = userService.getByEmail(email);
+        User result = userService.getByEmail(email);
 
         //then
-        assertThat(result.getNickname()).isEqualTo("jeohyoo1229");
+        assertThat(result.nickname()).isEqualTo("jeohyoo1229");
     }
 
     @Test
@@ -62,10 +59,10 @@ class UserServiceTest {
     @Test
     void getById은_ACTIVE_상태인_유저를_조회할_수_있다(){
         //when
-        UserEntity result = userService.getById(1L);
+        User result = userService.getById(1L);
 
         //then
-        assertThat(result.getNickname()).isEqualTo("jeohyoo1229");
+        assertThat(result.nickname()).isEqualTo("jeohyoo1229");
     }
 
     @Test
@@ -90,11 +87,11 @@ class UserServiceTest {
         BDDMockito.doNothing().when(javaMailSender).send(any(SimpleMailMessage.class));
 
         // when
-        UserEntity result = userService.create(userCreateDto);
+        User result = userService.create(userCreateDto);
 
         // then
-        assertThat(result.getId()).isNotNull();
-        assertThat(result.getStatus()).isEqualTo(UserStatus.PENDING);
+        assertThat(result.id()).isNotNull();
+        assertThat(result.status()).isEqualTo(UserStatus.PENDING);
         // assertThat(result.getCertificationCode()).isEqualTo("T.T"); // FIXME
     }
     @Test
@@ -109,10 +106,10 @@ class UserServiceTest {
         userService.update(1L, userUpdateDto);
 
         //then
-        UserEntity result = userService.getById(1L);
-        assertThat(result.getId()).isNotNull();
-        assertThat(result.getNickname()).isEqualTo("jeohyoo");
-        assertThat(result.getAddress()).isEqualTo("서울시 서대문구");
+        User result = userService.getById(1L);
+        assertThat(result.id()).isNotNull();
+        assertThat(result.nickname()).isEqualTo("jeohyoo");
+        assertThat(result.address()).isEqualTo("서울시 서대문구");
     }
 
     // 마찬가지로, Clock 의존성이 존재하기 때문에, 테스트를 할 수 없다.
@@ -123,8 +120,8 @@ class UserServiceTest {
         userService.login(1L);
 
         //then
-        UserEntity result = userService.getById(1L);
-        assertThat(result.getLastLoginAt()).isGreaterThan(0L); //FIXME: 시간을 비교할 방법을 찾자
+        User result = userService.getById(1L);
+        assertThat(result.lastLoginAt()).isPositive(); //FIXME: 시간을 비교할 방법을 찾자
     }
 
     @Test
@@ -136,8 +133,8 @@ class UserServiceTest {
         userService.verifyEmail(2L, certificationCode);
 
         //then
-        UserEntity result = userService.getById(2L);
-        assertThat(result.getStatus()).isEqualTo(UserStatus.ACTIVE);
+        User result = userService.getById(2L);
+        assertThat(result.status()).isEqualTo(UserStatus.ACTIVE);
     }
 
     @Test

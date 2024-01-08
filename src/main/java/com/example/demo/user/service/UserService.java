@@ -5,14 +5,12 @@ import com.example.demo.common.domain.exception.ResourceNotFoundException;
 import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.domain.UserUpdate;
-import com.example.demo.user.infrastructure.UserEntity;
 import com.example.demo.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,53 +20,42 @@ public class UserService {
     private final CertificationService certificationService;
     private static final String RESOURCE_NAME = "Users";
 
-    public UserEntity getByEmail(String email) {
+    public User getByEmail(String email) {
         return userRepository.findByEmailAndStatus(email, UserStatus.ACTIVE)
             .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, email));
     }
 
-    public UserEntity getById(long id) {
+    public User getById(long id) {
         return userRepository.findByIdAndStatus(id, UserStatus.ACTIVE)
             .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, id));
     }
 
     // "createUser" 하지 않아도, 이미 User 서비스이기 때문에, 유저 생성의 의미를 가지게 됨
     @Transactional
-    public UserEntity create(UserCreate userCreate) {
-        UserEntity userEntity = UserEntity.builder()
-            .email(userCreate.getEmail())
-            .nickname(userCreate.getNickname())
-            .address(userCreate.getAddress())
-            .certificationCode(UUID.randomUUID().toString())
-            .status(UserStatus.PENDING)
-            .build();
-        userEntity = userRepository.save(userEntity);
-        certificationService.send(userCreate.getEmail(), userEntity.getCertificationCode(), userEntity.getId());
-        return userEntity;
+    public User create(UserCreate userCreate) {
+        User user = userRepository.save(User.from(userCreate));
+        certificationService.send(userCreate.getEmail(), user.certificationCode(), user.id());
+        return user;
     }
 
     @Transactional
-    public UserEntity update(long id, UserUpdate userUpdate) {
-        UserEntity userEntity = getById(id);
-        userEntity.setNickname(userUpdate.getNickname());
-        userEntity.setAddress(userUpdate.getAddress());
-        userEntity = userRepository.save(userEntity);
-        return userEntity;
+    public User update(long id, UserUpdate userUpdate) {
+        User user = getById(id);
+        return userRepository.save(user.update(userUpdate));
     }
 
     @Transactional
     public void login(long id) {
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, id));
-        userEntity.setLastLoginAt(Clock.systemUTC().millis());
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, id));
+        userRepository.save(user.login());
     }
 
+    //이제 외부 연결성이 끊어져서 save 해줘야 함
     @Transactional
     public void verifyEmail(long id, String certificationCode) {
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, id));
-        if (!certificationCode.equals(userEntity.getCertificationCode())) {
-            throw new CertificationCodeNotMatchedException();
-        }
-        userEntity.setStatus(UserStatus.ACTIVE);
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, id));
+        user.certificate(user.certificationCode());
+        userRepository.save(user);
     }
 
 }

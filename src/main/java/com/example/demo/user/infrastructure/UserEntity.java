@@ -1,6 +1,7 @@
 package com.example.demo.user.infrastructure;
 
 import com.example.demo.user.domain.UserStatus;
+import com.example.demo.user.service.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,5 +46,28 @@ public class UserEntity {
         this.address = address;
         this.certificationCode = certificationCode;
         this.status = status;
+    }
+
+
+    public User toModel(){
+        return User.builder()
+            .id(this.id)
+            .email(this.email)
+            .nickname(this.nickname)
+            .address(this.address)
+            .certificationCode(this.certificationCode)
+            .status(this.status)
+            .lastLoginAt(this.lastLoginAt)
+            .build();
+    }
+
+    public static UserEntity fromModel(User user){
+        return UserEntity.builder()
+                .address(user.address())
+                .email(user.email())
+                .nickname(user.nickname())
+                .certificationCode(user.certificationCode())
+                .status(user.status())
+                .build();
     }
 }
