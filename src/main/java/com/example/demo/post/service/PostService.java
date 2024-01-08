@@ -4,15 +4,11 @@ package com.example.demo.post.service;
 import com.example.demo.common.domain.exception.ResourceNotFoundException;
 import com.example.demo.post.domain.PostCreate;
 import com.example.demo.post.domain.PostUpdate;
-import com.example.demo.post.infrastructure.PostEntity;
 import com.example.demo.post.service.port.PostRepository;
-import com.example.demo.user.infrastructure.UserEntity;
 import com.example.demo.user.service.User;
 import com.example.demo.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.Clock;
 
 @Service
 @RequiredArgsConstructor
@@ -27,17 +23,11 @@ public class PostService {
 
     public Post create(PostCreate postCreate) {
         User user = userService.getById(postCreate.getWriterId());
-        Post post = new Post();
-        post.setWriter(user);
-        post.setContent(postCreate.getContent());
-        post.setCreatedAt(Clock.systemUTC().millis());
-        return postRepository.save(post);
+        return postRepository.save(Post.from(postCreate, user));
     }
 
     public Post update(long id, PostUpdate postUpdate) {
         Post post = getPostById(id);
-        post.setContent(postUpdate.getContent());
-        post.setModifiedAt(Clock.systemUTC().millis());
-        return postRepository.save(post);
+        return postRepository.save(post.update(postUpdate));
     }
 }
