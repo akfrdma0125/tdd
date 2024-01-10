@@ -6,23 +6,25 @@ import com.example.demo.post.domain.PostCreate;
 import com.example.demo.post.domain.PostUpdate;
 import com.example.demo.post.service.port.PostRepository;
 import com.example.demo.user.service.User;
-import com.example.demo.user.service.UserService;
+import com.example.demo.user.service.port.UserRepository;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@Builder
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     public Post getPostById(long id) {
         return postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Posts", id));
     }
 
     public Post create(PostCreate postCreate) {
-        User user = userService.getById(postCreate.getWriterId());
+        User user =userRepository.getById(postCreate.getWriterId());
         return postRepository.save(Post.from(postCreate, user));
     }
 
