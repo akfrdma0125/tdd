@@ -75,9 +75,10 @@ class UserTest {
                 .status(UserStatus.ACTIVE)
                 .certificationCode("1234-1234-1234-1234")
                 .build();
+        TestClockHolder clockHolder = TestClockHolder.builder().millis(1000L).build();
 
         //when
-        user = user.login(new TestClockHolder(1000L));
+        user = user.login(clockHolder);
 
         //then
         assertThat(user.email()).isEqualTo("jeohyoo1229@gmail.com");
@@ -100,9 +101,10 @@ class UserTest {
                 .status(UserStatus.PENDING)
                 .certificationCode("1234-1234-1234-1234")
                 .build();
+        TestClockHolder testClockHolder = TestClockHolder.builder().millis(1000L).build();
 
         //when
-        user = user.certificate("1234-1234-1234-1234", new TestClockHolder(1000L));
+        user = user.certificate("1234-1234-1234-1234", testClockHolder);
 
         //then
         assertThat(user.email()).isEqualTo("jeohyoo1229@gmail.com");
@@ -125,10 +127,11 @@ class UserTest {
                 .status(UserStatus.PENDING)
                 .certificationCode("1234-1234-1234-1234")
                 .build();
+        TestClockHolder testClockHolder = TestClockHolder.builder().millis(1000L).build();
 
         //when
         //then
-        assertThatThrownBy(() -> user.certificate("1234-1234-1234-1235", new TestClockHolder(1000L)))
+        assertThatThrownBy(() -> user.certificate("1234-1234-1234-1235", testClockHolder))
                 .isInstanceOf(CertificationCodeNotMatchedException.class);
     }
 }
