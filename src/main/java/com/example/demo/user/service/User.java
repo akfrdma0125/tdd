@@ -1,13 +1,13 @@
 package com.example.demo.user.service;
 
 import com.example.demo.common.domain.exception.CertificationCodeNotMatchedException;
+import com.example.demo.common.service.port.ClockHolder;
+import com.example.demo.common.service.port.UuidHolder;
 import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.domain.UserUpdate;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.UUID;
 
 @Builder
 @Slf4j
@@ -18,11 +18,11 @@ public record User(Long id,
                    String certificationCode,
                    UserStatus status,
                    Long lastLoginAt) {
-    public static User from(UserCreate userCreate) {
+    public static User from(UserCreate userCreate, UuidHolder uuidHolder) {
         return User.builder()
                 .email(userCreate.getEmail())
                 .nickname(userCreate.getNickname())
-                .certificationCode(UUID.randomUUID().toString())
+                .certificationCode(uuidHolder.random())
                 .address(userCreate.getAddress())
                 .status(UserStatus.PENDING)
                 .build();
@@ -40,7 +40,7 @@ public record User(Long id,
                 .build();
     }
 
-    public User login(){
+    public User login(ClockHolder clockHolder) {
         return User.builder()
                 .id(this.id)
                 .email(this.email)
@@ -48,11 +48,11 @@ public record User(Long id,
                 .address(this.address)
                 .certificationCode(this.certificationCode)
                 .status(this.status)
-                .lastLoginAt(System.currentTimeMillis())
+                .lastLoginAt(clockHolder.millis())
                 .build();
     }
 
-    public User certificate(String code){
+    public User certificate(String code, ClockHolder clockHolder){
         if (!code.equals(this.certificationCode)) {
             throw new CertificationCodeNotMatchedException();
         }
@@ -64,7 +64,7 @@ public record User(Long id,
                 .address(this.address)
                 .certificationCode(this.certificationCode)
                 .status(UserStatus.ACTIVE)
-                .lastLoginAt(System.currentTimeMillis())
+                .lastLoginAt(clockHolder.millis())
                 .build();
     }
 }
