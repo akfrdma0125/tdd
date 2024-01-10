@@ -5,11 +5,10 @@ import com.example.demo.user.service.User;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-class UserResponseTest {
+class MyProfileResponseTest {
     @Test
-    void User로_UserResponse_응답을_생성할_수_있다() {
+    void User로_MyProfileResponse_응답을_생성할_수_있다() {
         //given
         User user = User.builder()
                 .id(1L)
@@ -21,12 +20,13 @@ class UserResponseTest {
                 .build();
 
         //when
-        UserResponse userResponse = UserResponse.from(user);
+        MyProfileResponse myProfileResponse = MyProfileResponse.from(user);
 
         //then
-        assertThat(userResponse.getId()).isEqualTo(1L);
-        assertThat(userResponse.getEmail()).isEqualTo("jeohyoo1229@gmail.com");
-        assertThat(userResponse.getNickname()).isEqualTo("jeohyoo1229");
-        assertThat(userResponse.getStatus()).isEqualTo(UserStatus.ACTIVE);
+        assertThat(myProfileResponse.getId()).isEqualTo(1L);
+        assertThat(myProfileResponse.getEmail()).isEqualTo("jeohyoo1229@gmail.com");
+        assertThat(myProfileResponse.getNickname()).isEqualTo("jeohyoo1229");
+        assertThat(myProfileResponse.getAddress()).isEqualTo("서울시 강남구");
+        assertThat(myProfileResponse.getStatus()).isEqualTo(UserStatus.ACTIVE);
     }
 }
