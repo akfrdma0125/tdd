@@ -1,4 +1,4 @@
-package com.example.demo.user.controller;
+package com.example.demo.medium;
 
 
 import com.example.demo.user.domain.UserCreate;
@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SqlGroup({
         @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "/sql/delete-all-data.sql")
 })
-public class UserCreateControllerTest {
+class UserCreateControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

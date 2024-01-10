@@ -1,4 +1,4 @@
-package com.example.demo.post.controller;
+package com.example.demo.medium;
 
 
 import com.example.demo.post.domain.PostUpdate;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         @Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "/sql/delete-all-data.sql"),
         @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/sql/post-controller-test-data.sql")
 })
-public class PostControllerTest {
+class PostControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
