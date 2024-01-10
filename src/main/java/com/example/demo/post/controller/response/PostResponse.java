@@ -16,11 +16,11 @@ public class PostResponse {
 
     public static PostResponse from(Post post) {
         return PostResponse.builder()
-            .id(post.getId())
-            .content(post.getContent())
-            .createdAt(post.getCreatedAt())
-            .modifiedAt(post.getModifiedAt())
-            .writer(UserResponse.from(post.getWriter()))
+            .id(post.id())
+            .content(post.content())
+            .createdAt(post.createdAt())
+            .modifiedAt(post.modifiedAt())
+            .writer(UserResponse.from(post.writer()))
             .build();
     }
 }
