@@ -5,12 +5,12 @@ import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.domain.UserUpdate;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
 
-@Getter
 @Builder
+@Slf4j
 public record User(Long id,
                    String email,
                    String nickname,
@@ -52,8 +52,8 @@ public record User(Long id,
                 .build();
     }
 
-    public User certificate(String certificationCode){
-        if (!certificationCode.equals(this.certificationCode)) {
+    public User certificate(String code){
+        if (!code.equals(this.certificationCode)) {
             throw new CertificationCodeNotMatchedException();
         }
 

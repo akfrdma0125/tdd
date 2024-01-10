@@ -1,18 +1,17 @@
 package com.example.demo.user.service;
 
-import com.example.demo.common.domain.exception.CertificationCodeNotMatchedException;
 import com.example.demo.common.domain.exception.ResourceNotFoundException;
 import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.domain.UserUpdate;
 import com.example.demo.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Clock;
-
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
@@ -33,7 +32,9 @@ public class UserService {
     // "createUser" 하지 않아도, 이미 User 서비스이기 때문에, 유저 생성의 의미를 가지게 됨
     @Transactional
     public User create(UserCreate userCreate) {
-        User user = userRepository.save(User.from(userCreate));
+        User user = User.from(userCreate);
+        log.error("userID: {}, userEmail:{}", user.id(), user.email());
+        user = userRepository.save(user);
         certificationService.send(userCreate.getEmail(), user.certificationCode(), user.id());
         return user;
     }
@@ -54,7 +55,7 @@ public class UserService {
     @Transactional
     public void verifyEmail(long id, String certificationCode) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, id));
-        user.certificate(user.certificationCode());
+        user = user.certificate(certificationCode);
         userRepository.save(user);
     }
 

@@ -3,7 +3,6 @@ package com.example.demo.user.infrastructure;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.service.User;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,36 +37,27 @@ public class UserEntity {
     @Column(name = "last_login_at")
     private Long lastLoginAt;
 
-    @Builder
-    public UserEntity(Long id, String email, String nickname, String address, String certificationCode, UserStatus status) {
-        this.id = id;
-        this.email = email;
-        this.nickname = nickname;
-        this.address = address;
-        this.certificationCode = certificationCode;
-        this.status = status;
+    public static UserEntity from(User user) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.id = user.id();
+        userEntity.email = user.email();
+        userEntity.nickname = user.nickname();
+        userEntity.address = user.address();
+        userEntity.certificationCode = user.certificationCode();
+        userEntity.status = user.status();
+        userEntity.lastLoginAt = user.lastLoginAt();
+        return userEntity;
     }
 
-
-    public User toModel(){
+    public User toModel() {
         return User.builder()
-            .id(this.id)
-            .email(this.email)
-            .nickname(this.nickname)
-            .address(this.address)
-            .certificationCode(this.certificationCode)
-            .status(this.status)
-            .lastLoginAt(this.lastLoginAt)
-            .build();
-    }
-
-    public static UserEntity fromModel(User user){
-        return UserEntity.builder()
-                .address(user.address())
-                .email(user.email())
-                .nickname(user.nickname())
-                .certificationCode(user.certificationCode())
-                .status(user.status())
+                .id(id)
+                .email(email)
+                .nickname(nickname)
+                .address(address)
+                .certificationCode(certificationCode)
+                .status(status)
+                .lastLoginAt(lastLoginAt)
                 .build();
     }
 }

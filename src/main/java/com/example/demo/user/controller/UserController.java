@@ -28,7 +28,7 @@ public class UserController {
     public ResponseEntity<UserResponse> getUserById(@PathVariable long id) {
         return ResponseEntity
             .ok()
-            .body(toResponse(userService.getById(id)));
+            .body(UserResponse.from(userService.getById(id)));
     }
 
     @GetMapping("/{id}/verify")
@@ -50,7 +50,7 @@ public class UserController {
         userService.login(user.id());
         return ResponseEntity
             .ok()
-            .body(toMyProfileResponse(user));
+            .body(MyProfileResponse.from(user));
     }
 
     @PutMapping("/me")
@@ -64,27 +64,7 @@ public class UserController {
         user = userService.update(user.id(), userUpdate);
         return ResponseEntity
             .ok()
-            .body(toMyProfileResponse(user));
+            .body(MyProfileResponse.from(user));
     }
 
-    public UserResponse toResponse(User user) {
-        UserResponse userResponse = new UserResponse();
-        userResponse.setId(user.id());
-        userResponse.setEmail(user.email());
-        userResponse.setNickname(user.nickname());
-        userResponse.setStatus(user.status());
-        userResponse.setLastLoginAt(user.lastLoginAt());
-        return userResponse;
-    }
-
-    public MyProfileResponse toMyProfileResponse(User user) {
-        MyProfileResponse myProfileResponse = new MyProfileResponse();
-        myProfileResponse.setId(user.id());
-        myProfileResponse.setEmail(user.email());
-        myProfileResponse.setNickname(user.nickname());
-        myProfileResponse.setStatus(user.status());
-        myProfileResponse.setAddress(user.address());
-        myProfileResponse.setLastLoginAt(user.lastLoginAt());
-        return myProfileResponse;
-    }
 }

@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static com.example.demo.user.infrastructure.UserEntity.fromModel;
-
 @Repository
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
@@ -30,7 +28,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
-        return userJpaRepository.save(fromModel(user)).toModel();
+        return userJpaRepository.save(UserEntity.from(user)).toModel();
     }
 
     @Override
