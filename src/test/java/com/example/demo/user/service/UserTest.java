@@ -1,8 +1,10 @@
 package com.example.demo.user.service;
 
 import com.example.demo.common.domain.exception.CertificationCodeNotMatchedException;
+import com.example.demo.common.service.port.ClockHolder;
 import com.example.demo.mock.TestClockHolder;
 import com.example.demo.mock.TestUuidHolder;
+import com.example.demo.user.domain.User;
 import com.example.demo.user.domain.UserCreate;
 import com.example.demo.user.domain.UserStatus;
 import com.example.demo.user.domain.UserUpdate;
@@ -12,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UserTest {
+    private ClockHolder clockHolder = TestClockHolder.builder().millis(1000L).build();
 
     @Test
     void User는_UserCreate로_유저_정보를_생성할_수_있다() {
@@ -53,7 +56,7 @@ class UserTest {
                 .build();
 
         //when
-        user = user.update(userUpdate);
+        user = user.update(userUpdate, clockHolder);
 
         //then
         assertThat(user.id()).isEqualTo(1L);

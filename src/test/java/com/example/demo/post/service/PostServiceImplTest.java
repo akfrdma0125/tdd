@@ -3,24 +3,25 @@ package com.example.demo.post.service;
 import com.example.demo.mock.FakePostRepository;
 import com.example.demo.mock.FakeUserRepository;
 import com.example.demo.mock.TestClockHolder;
+import com.example.demo.post.domain.Post;
 import com.example.demo.post.domain.PostCreate;
 import com.example.demo.post.domain.PostUpdate;
 import com.example.demo.user.domain.UserStatus;
-import com.example.demo.user.service.User;
+import com.example.demo.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
- class PostServiceTest {
+ class PostServiceImplTest {
 
-    private PostService postService;
+    private PostServiceImpl postServiceImpl;
 
     @BeforeEach
     void init(){
         FakePostRepository fakePostRepository = new FakePostRepository();
         FakeUserRepository fakeUserRepository = new FakeUserRepository();
-        postService = PostService.builder()
+        postServiceImpl = PostServiceImpl.builder()
                 .postRepository(fakePostRepository)
                 .userRepository(fakeUserRepository)
                 .clockHolder(TestClockHolder.builder().millis(1679530673958L).build())
@@ -49,7 +50,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     void getById는_존재하는_게시물을_내려준다() {
         // given
         // when
-        Post result = postService.getById(1);
+        Post result = postServiceImpl.getById(1);
 
         // then
         assertThat(result.content()).isEqualTo("hello, riize");
@@ -65,7 +66,7 @@ import static org.assertj.core.api.Assertions.assertThat;
                 .build();
 
         // when
-        Post result = postService.create(postCreate);
+        Post result = postServiceImpl.create(postCreate);
 
         // then
         assertThat(result.id()).isNotNull();
@@ -81,10 +82,10 @@ import static org.assertj.core.api.Assertions.assertThat;
                 .build();
 
         // when
-        postService.update(1, postUpdate);
+        postServiceImpl.update(1, postUpdate);
 
         // then
-        Post post = postService.getById(1);
+        Post post = postServiceImpl.getById(1);
         assertThat(post.content()).isEqualTo("hello world :)");
         assertThat(post.modifiedAt()).isEqualTo(1679530673958L);
     }

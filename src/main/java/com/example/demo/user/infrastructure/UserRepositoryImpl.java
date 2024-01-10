@@ -2,7 +2,7 @@ package com.example.demo.user.infrastructure;
 
 import com.example.demo.common.domain.exception.ResourceNotFoundException;
 import com.example.demo.user.domain.UserStatus;
-import com.example.demo.user.service.User;
+import com.example.demo.user.domain.User;
 import com.example.demo.user.service.port.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

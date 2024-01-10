@@ -1,7 +1,7 @@
 package com.example.demo.user.controller.response;
 
 import com.example.demo.user.domain.UserStatus;
-import com.example.demo.user.service.User;
+import com.example.demo.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 

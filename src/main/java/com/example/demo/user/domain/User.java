@@ -1,11 +1,8 @@
-package com.example.demo.user.service;
+package com.example.demo.user.domain;
 
 import com.example.demo.common.domain.exception.CertificationCodeNotMatchedException;
 import com.example.demo.common.service.port.ClockHolder;
 import com.example.demo.common.service.port.UuidHolder;
-import com.example.demo.user.domain.UserCreate;
-import com.example.demo.user.domain.UserStatus;
-import com.example.demo.user.domain.UserUpdate;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +25,7 @@ public record User(Long id,
                 .build();
     }
 
-    public User update(UserUpdate userUpdate) {
+    public User update(UserUpdate userUpdate, ClockHolder clockHolder) {
         return User.builder()
                 .id(this.id)
                 .email(this.email)
@@ -36,7 +33,7 @@ public record User(Long id,
                 .address(userUpdate.getAddress())
                 .certificationCode(this.certificationCode)
                 .status(this.status)
-                .lastLoginAt(this.lastLoginAt)
+                .lastLoginAt(clockHolder.millis())
                 .build();
     }
 

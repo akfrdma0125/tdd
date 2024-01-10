@@ -1,6 +1,6 @@
 package com.example.demo.mock;
 
-import com.example.demo.post.service.Post;
+import com.example.demo.post.domain.Post;
 import com.example.demo.post.service.port.PostRepository;
 
 import java.util.ArrayList;

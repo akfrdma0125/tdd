@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 public class CertificationService {
     private final MailSender mailSender;
 
-
     public void send(final String email, final String certificationCode, final Long userId) {
         final String certificationUrl = generateUrl(userId, certificationCode);
         String title = "Please certify your email address";
