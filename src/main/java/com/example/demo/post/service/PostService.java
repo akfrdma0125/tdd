@@ -2,6 +2,7 @@ package com.example.demo.post.service;
 
 
 import com.example.demo.common.domain.exception.ResourceNotFoundException;
+import com.example.demo.common.service.port.ClockHolder;
 import com.example.demo.post.domain.PostCreate;
 import com.example.demo.post.domain.PostUpdate;
 import com.example.demo.post.service.port.PostRepository;
@@ -18,19 +19,20 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ClockHolder clockHolder;
 
-    public Post getPostById(long id) {
+    public Post getById(long id) {
         return postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Posts", id));
     }
 
     public Post create(PostCreate postCreate) {
         User user =userRepository.getById(postCreate.getWriterId());
-        return postRepository.save(Post.from(postCreate, user));
+        return postRepository.save(Post.from(postCreate, user, clockHolder));
     }
 
     public Post update(long id, PostUpdate postUpdate) {
-        Post post = getPostById(id);
-        post = post.update(postUpdate);
+        Post post = getById(id);
+        post = post.update(postUpdate, clockHolder);
         return postRepository.save(post);
     }
 }
